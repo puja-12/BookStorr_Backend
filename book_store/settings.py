@@ -37,6 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'user',
+'rest_framework',
 ]
 
 MIDDLEWARE = [
@@ -125,3 +127,40 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': BASE_DIR / 'book_store.log',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['file'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+    },
+    'formatter': {
+        'simple': {
+            'format': '%(lineno)d %(levelname)s %(asctime)s %(module)s: %(message)s',
+            'style': '{'
+        }
+    }
+}
+AUTH_USER_MODEL= "user.User"
+
+# JWT_SECRET_KEY = SECRET_KEY
+# JWT_EXP_TIME = 60
+#
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_HOST = 'smtp.gmail.com'
+# EMAIL_USE_TLS = True
+# EMAIL_PORT = 587
+# EMAIL_HOST_USER = 'maheshkodergowri@gmail.com'
+# EMAIL_HOST_PASSWORD = 'cndeylgjynihdbhv'
+#
+# BASE_URL='http://127.0.0.1:8000'
