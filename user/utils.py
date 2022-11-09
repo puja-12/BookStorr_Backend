@@ -38,28 +38,48 @@ class Email:
             print(e)
 
 
+def get_user(args):
+    request = list(filter(lambda x: isinstance(x, Request), args))[0]
+
+    token = request.headers.get("Token")
+    if not token:
+        raise Exception("Token is invalid")
+    decode = Jwt().decode_token(token=token)
+    user_id = decode.get("user_id")
+    if not user_id:
+        raise Exception("Invalid user")
+    try:
+        user = User.objects.get(id=user_id)
+
+    except User.DoesNotExist:
+        raise Exception(" user not found")
+    return user,request
+
+
 def verify_token(function):
     """
     function for checking and verifying token for valid user
     """
 
     def wrapper(*args, **kwargs):
-        request = list(filter(lambda x: isinstance(x, Request), args))[0]
+        user,request = get_user(args)
+        request.data.update({"user": user.id})
+        return function(*args, **kwargs)
 
-        token = request.headers.get("Token")
-        if not token:
-            raise Exception("Token is invalid")
-        decode = Jwt().decode_token(token=token)
-        user_id = decode.get("user_id")
-        if not user_id:
-            raise Exception("Invalid user")
-        try:
-            User.objects.get(id=1000)
+    return wrapper
 
-        except User.DoesNotExist:
-            raise Exception(" user not found")
 
-        request.data.update({"user": user_id})
+def verify_superuser(function):
+    """
+    function for checking and verifying token for valid user
+    """
+
+    def wrapper(*args, **kwargs):
+        user,request = get_user(args)
+
+        if not user.is_superuser:
+            raise Exception("user is not authorised to perform this task")
+        request.data.update({"user": user.id})
         return function(*args, **kwargs)
 
     return wrapper
