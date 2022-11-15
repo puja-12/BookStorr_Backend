@@ -49,7 +49,7 @@ class UserLogin(APIView):
                 if user.is_verify:
                     token = Jwt.encode_token(
                         payload={'user_id': user.id, 'exp': datetime.utcnow() + timedelta(minutes=60)})
-                    return get_respone(message='Login success', data={'token': token})
+                    return get_respone(message='Login success', data={'token': token},status=200)
                 Email.verify_user(user.id, user.username, user.email)
                 return get_respone(message=' user is not verified and check email', status=401)
             return get_respone(message='Invalid credentials used!', status=401)
