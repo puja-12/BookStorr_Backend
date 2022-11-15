@@ -39,7 +39,10 @@ class Email:
 
 
 def get_user(args):
-    request = list(filter(lambda x: isinstance(x, Request), args))[0]
+    request_list = list(filter(lambda x: isinstance(x, Request), args))
+    if len(request_list) == 0:
+        raise Exception( "data not fount")
+    request=request_list[0]
 
     token = request.headers.get("Token")
     if not token:

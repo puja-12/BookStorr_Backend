@@ -21,10 +21,10 @@ class GetAllBookListView(APIView):
         """
         try:
 
-            # book_list = Book.objects.all()
-            # serializer = BookListSerializer(book_list, many=True)
-            data=RedisBook(user_id=request.data.get('user')).get()
-            return get_respone(message="All Book", data=data, status=200)
+            book_list = Book.objects.all()
+            serializer = BookListSerializer(book_list, many=True)
+
+            return get_respone(message="All Book", data=serializer.data, status=200)
         except Exception as e:
             logger.exception(e)
             return get_respone(message="Something went Wrong",
@@ -37,7 +37,6 @@ class GetAllBookListView(APIView):
         """
         try:
             book = Book.objects.get(id=request.data.get("id"))
-            RedisBook(user_id=request.data.get('user')).delete(pk=book.id)
             book.delete()
 
             return get_respone(message="delete successfully", status=204)
@@ -55,7 +54,6 @@ class GetAllBookListView(APIView):
             serializers = BookListSerializer(instance=book, data=request.data)
             serializers.is_valid(raise_exception=True)
             serializers.save()
-            RedisBook(user_id=request.data.get('user')).create(payload=serializers.data)
 
             return get_respone(message="book updated successfully", data=serializers.data, status=200)
         except ValidationError as e:
@@ -74,7 +72,6 @@ class GetAllBookListView(APIView):
             serializers = BookListSerializer(data=request.data)
             serializers.is_valid(raise_exception=True)
             serializers.save()
-            RedisBook(user_id=request.data.get('user')).create(payload=serializers.data)
             return get_respone(message="book added successfully", data=serializers.data, status=201)
         except ValidationError as e:
             return get_respone(message=e.detail, status=204)
