@@ -1,5 +1,6 @@
 import logging
 
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
 from rest_framework.serializers import ValidationError
 from rest_framework.views import APIView
@@ -18,6 +19,7 @@ class CartViews(APIView):
     Class to perform curd operation for the Cart
     """
 
+    @swagger_auto_schema()
     @verify_token
     def get(self, request):
         """
@@ -33,6 +35,7 @@ class CartViews(APIView):
             logger.exception(e)
             return get_respone(message="Something went Wrong", status=400)
 
+    @swagger_auto_schema(request_body=CartSerializer)
     @verify_token
     def post(self, request):
         """
@@ -53,6 +56,7 @@ class CartViews(APIView):
             logger.exception(e)
             return get_respone(message="Something went Wrong", status=400)
 
+    @swagger_auto_schema(request_body=CartSerializer)
     @verify_token
     def delete(self, request):
         """

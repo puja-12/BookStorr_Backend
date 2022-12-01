@@ -1,11 +1,13 @@
 import logging
+
+from drf_yasg import openapi
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework.serializers import ValidationError
 from rest_framework.views import APIView
 from book.serializers import BookListSerializer
 from user.utils import get_respone, verify_superuser
 from .models import Book
-from book.utils import  RedisBook
-
+from book.utils import RedisBook
 
 logger = logging.getLogger()
 
@@ -15,6 +17,9 @@ class GetAllBookListView(APIView):
     Class view for getting all the book
     """
 
+    @swagger_auto_schema(manual_parameters=[
+        openapi.Parameter('TOKEN', openapi.IN_HEADER, "token", type=openapi.TYPE_STRING)
+    ])
     def get(self, request):
         """
         get function for requesting get method to get all the book
@@ -30,6 +35,11 @@ class GetAllBookListView(APIView):
             return get_respone(message="Something went Wrong",
                                status=400)
 
+
+
+    @swagger_auto_schema(manual_parameters=[
+        openapi.Parameter('TOKEN', openapi.IN_HEADER, "token", type=openapi.TYPE_STRING)
+    ])
     @verify_superuser
     def delete(self, request):
         """
@@ -44,6 +54,20 @@ class GetAllBookListView(APIView):
             logger.exception(e)
             return get_respone(message="Something went Wrong", status=400)
 
+
+
+    @swagger_auto_schema(manual_parameters=[
+        openapi.Parameter('TOKEN', openapi.IN_HEADER, "token", type=openapi.TYPE_STRING)
+    ],
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={
+                'id': openapi.Schema(type=openapi.TYPE_STRING, description="id"),
+                'title': openapi.Schema(type=openapi.TYPE_STRING, description="title"),
+                'price': openapi.Schema(type=openapi.TYPE_STRING, description="price"),
+                'quantity': openapi.Schema(type=openapi.TYPE_STRING, description="quantity")
+            }
+        ))
     @verify_superuser
     def put(self, request):
         """
@@ -62,6 +86,19 @@ class GetAllBookListView(APIView):
             logger.exception(e)
             return get_respone(message="Something went Wrong", status=400)
 
+
+
+    @swagger_auto_schema(manual_parameters=[
+        openapi.Parameter('TOKEN', openapi.IN_HEADER, "token", type=openapi.TYPE_STRING)
+    ],
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={
+                'title': openapi.Schema(type=openapi.TYPE_STRING, description="title"),
+                'price': openapi.Schema(type=openapi.TYPE_STRING, description="price"),
+                'quantity': openapi.Schema(type=openapi.TYPE_STRING, description="quantity")
+            }
+        ))
     @verify_superuser
     def post(self, request):
         """

@@ -2,6 +2,8 @@ import logging
 from datetime import datetime, timedelta
 
 from django.contrib.auth import authenticate
+from drf_yasg import openapi
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework.serializers import ValidationError
 from rest_framework.views import APIView
 
@@ -14,7 +16,20 @@ logger = logging.getLogger('django')
 
 
 class UserRegistration(APIView):
+    @swagger_auto_schema(
+        operation_summary="registration",
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={
+                'username': openapi.Schema(type=openapi.TYPE_STRING, description='username'),
+                'password': openapi.Schema(type=openapi.TYPE_STRING, description='password'),
+                'first_name': openapi.Schema(type=openapi.TYPE_STRING, description='first_name'),
+                'last_name': openapi.Schema(type=openapi.TYPE_STRING, description='last_name'),
+                'email': openapi.Schema(type=openapi.TYPE_STRING, description='email'),
+                'mobile': openapi.Schema(type=openapi.TYPE_STRING, description='mobile'),
 
+            }
+        ))
     def post(self, request):
 
         """
@@ -38,6 +53,15 @@ class UserRegistration(APIView):
 
 
 class UserLogin(APIView):
+    @swagger_auto_schema(
+        operation_summary="login",
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={
+                'username': openapi.Schema(type=openapi.TYPE_STRING, description='username'),
+                'password': openapi.Schema(type=openapi.TYPE_STRING, description='password'),
+            }
+        ))
 
     def post(self, request):
         """
